@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Flash Testing for Dummies
-tags: [pentest, guide]
+tags: [pentesting]
 category: posts
 ---
 

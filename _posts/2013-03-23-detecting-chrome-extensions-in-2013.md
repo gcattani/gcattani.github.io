@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Detecting Chrome Extensions in 2013
-tags: [browser, research]
+tags: [researching]
 category: posts
 ---
 

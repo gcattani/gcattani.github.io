@@ -1,7 +1,9 @@
 # gcattani.github.io
 
-Hello, this is my personal website and blog. I occasionally post about stuff that interests me.
+Hello,
 
-Visit it at [gcattani.co.vu](http://gcattani.co.vu)!
+this is the repository for my personal website and blog. I occasionally post about security and other stuff that interests me.
 
-The current version uses [So Simple](http://mmistakes.github.io/so-simple-theme), an amazing Jekyll theme by [Michael Rose](http://mademistakes.com).
+Check it out at [gcattani.co.vu](http://gcattani.co.vu)!
+
+The current version uses the Jekyll theme [Gereksi](https://github.com/berkoz/gereksiz) by [berkoz](https://github.com/berkoz).

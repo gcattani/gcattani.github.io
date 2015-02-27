@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="description" content=Giovanni Cattani's Blog>
+      <meta name="author" content=Giovanni Cattani>
+      <meta name="viewport" content="width=device-width">
+      <link rel="stylesheet" href="/css/syntax.css">
+      <link rel="stylesheet" href="/css/main.css">
+      <link rel="stylesheet" href="/css/normalize.css">
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+      <link rel="alternate" type="application/atom+xml" href="/atom.xml">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+   ga('create', 'UA-39540268-1', 'gcattani.co.vu');
+   ga('send', 'pageview');
+</script>
+
+      <title>Updating Tenable Nessus Plugins</title>
+   </head>
+   
+   <body>
+      <main>
+         <header>
+            <h1 class="title"><a href="/">BoringSec</a></h1>
+         </header>
+
+         <article>
+   <h2>Updating Tenable Nessus Plugins</h2>
+   <hr>
+   <p><em>Since I always keep forgetting how to manually update the plugins for <a href="http://www.tenable.com/products/nessus-vulnerability-scanner">Tenable Nessus</a>, I&#39;m posting this here so I can easily find it later.</em></p>
+
+<p>To perform a manual update of the plugin feed it&#39;s necessary to execute the following command. Note that Nessus will also warn the user when the feed download has been completed.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>sudo /opt/nessus/sbin/nessus-update-plugins
+Fetching the newest updates from nessus.org...
+Done. The Nessus server will start processing these plugins within a minute</code></pre></div>
+
+<p>To check whether the plugins have been correctly updated or not, it&#39;s possible to check the feed version by simply reading a specific file, as shown below.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cat /opt/nessus/lib/nessus/plugins/plugin_feed_info.inc
+<span class="nv">PLUGIN_SET</span> <span class="o">=</span> <span class="s2">&quot;201502240415&quot;</span><span class="p">;</span>
+<span class="nv">PLUGIN_FEED</span> <span class="o">=</span> <span class="s2">&quot;ProfessionalFeed (Direct)&quot;</span><span class="p">;</span></code></pre></div>
+
+<p>After the update command has been successfully executed, Nessus will begin initialising. This may take some time depending on how old the plugin feed was.</p>
+
+<p><img src="/img/2015-03-02-updating-nessus-plugins/nessus-initialising.png" alt="Nessus Initialisation"></p>
+
+</article>
+
+<footer>
+   <div id="date" class="meta">
+      02 Mar 2015
+   </div>
+   <div id="return">
+      <a href="/">&laquo; Home Page</a>
+   </div>
+   <br>
+</footer>
+
+      </main>
+   </body>
+</html>

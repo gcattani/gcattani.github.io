@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Removing RimAlbumArtDaemon
-tags: [guide]
+tags: [tips]
 category: posts
 ---
 
@@ -9,13 +9,17 @@ If you are on OS X and happen to use BlackBerry Desktop Software, you might have
 
 After struggling for days, I finally found a [solution][post], which I will report here for my own reference (hopefully helping others). 
 
-	$ sudo rm /Library/Application\ Support/BlackBerry/RimAlbumArtDaemon
+{% highlight bash %}
+$ sudo rm /Library/Application\ Support/BlackBerry/RimAlbumArtDaemon
+{% endhighlight %}
 	
 I didn't found any reason against deleting the file completely, but if you'd like to play it safe you could just rename it.
 
-	$ cd /Library/Application\ Support/BlackBerry/
-	$ sudo mv RimAlbumArtDaemon RimAlbumArtDaemon.old
-	
+{% highlight bash %}
+$ cd /Library/Application\ Support/BlackBerry/
+$ sudo mv RimAlbumArtDaemon RimAlbumArtDaemon.old
+{% endhighlight %}
+
 Note that the process will come back every time the BlackBerry software gets updated.
 
 

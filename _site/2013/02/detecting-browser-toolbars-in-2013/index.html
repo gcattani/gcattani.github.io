@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="description" content=Giovanni Cattani's Blog>
+      <meta name="author" content=Giovanni Cattani>
+      <meta name="viewport" content="width=device-width">
+      <link rel="stylesheet" href="/css/syntax.css">
+      <link rel="stylesheet" href="/css/main.css">
+      <link rel="stylesheet" href="/css/normalize.css">
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+      <link rel="alternate" type="application/atom+xml" href="/atom.xml">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+   ga('create', 'UA-39540268-1', 'gcattani.co.vu');
+   ga('send', 'pageview');
+</script>
+
+      <title>Detecting Browser Toolbars</title>
+   </head>
+   
+   <body>
+      <main>
+         <header>
+            <h1 class="title"><a href="/">BoringSec</a></h1>
+         </header>
+
+         <article>
+   <h2>Detecting Browser Toolbars</h2>
+   <hr>
+   <p>In January 2013 I began my involvement with the <a href="http://beefproject.org">Browser Exploitation Framework</a> (BeEF) and the first assignement was the development of a toolbar detection module. Since a preliminary web search highlighted the lack of widespread information about the matter, I got right into hands-on testing.</p>
+
+<p>The module focused on the most common toolbars on the market: <em>Alexa</em>, <em>Answers.com</em>, <em>Ask</em>, <em>Bing</em>, <em>Google</em>, <em>Stumble Upon</em> and <em>Yahoo!</em>.</p>
+
+<p>A first analysis uncovered that all the toolbars, with the only exception of the ones from Ask and Yahoo!, added a string to the browser User-Agent, thus making the detection trivial (i.e. <code>navigator.userAgent</code>):</p>
+
+<ul>
+<li><code>Alexa Toolbar</code> (Alexa)</li>
+<li><code>AskTbS-PV/5.15.12.33066</code> (Ask)</li>
+<li><code>BRI/2</code> (Bing)</li>
+<li><code>GTB7.4</code> (Google)</li>
+<li><code>SU 3.96</code> (Stumble Upon)</li>
+</ul>
+
+<p>A basic regular expression could then be used to detect which toolbars are installed and could be expanded later on to detect even more.</p>
+
+<p>The User-Agent didn&#39;t provide any data to easily detect the Answers and Yahoo toolbars, so I moved onto DOM analysis, also to improve the overall reliability of the script. Unfortunately, only the Alexa toolbar seemed to add anything to the DOM, while there was no visible content added by the other software. The code that Alexa&#39;s toolbar added to the document head was the following:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script id=&quot;AlexaCustomScriptId&quot;&gt;&lt;/script&gt;
+</code></pre></div>
+<p>To my dismay, there was still no sign of the Answers and Yahoo toolbars anywhere! In the end, I pushed the module in its hybrid state, checking both DOM and User-Agent, and without being able to detect the two missing toolbars.</p>
+
+</article>
+
+<footer>
+   <div id="date" class="meta">
+      14 Feb 2013
+   </div>
+   <div id="return">
+      <a href="/">&laquo; Home Page</a>
+   </div>
+   <br>
+</footer>
+
+      </main>
+   </body>
+</html>

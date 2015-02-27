@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Don't Make Penetration Testing a Waste of Time
-tags: [pentest, rant]
+tags: [ranting]
 category: posts
 ---
 

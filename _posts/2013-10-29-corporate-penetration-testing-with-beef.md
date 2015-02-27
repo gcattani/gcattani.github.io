@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Talk - Corporate Penetration Testing with BeEF
-tags: [talk, beef]
+title: Corporate Penetration Testing with BeEF
+tags: [talking]
 category: posts
 ---
 
@@ -13,7 +13,7 @@ Get the slides on [Speaker Deck][slides] or watch them below.
 
 ### Slides
 
-<script async class="speakerdeck-embed" data-id="d13373e021160131fca9464dee30730c" data-ratio="1.33333" src="//speakerdeck.com/assets/embed.js"></script>
+<script async class="speakerdeck-embed" data-id="d13373e021160131fca9464dee30730c" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
 
 [smau]: http://www.smau.it/milano13/schedules/uso-di-beef-nel-penetration-testing-aziendale/

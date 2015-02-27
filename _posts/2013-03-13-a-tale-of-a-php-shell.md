@@ -1,7 +1,7 @@
 ---
 layout: post
 title: A Tale of a PHP Shell
-tags: [pentest]
+tags: [pentesting]
 category: posts
 ---
 
