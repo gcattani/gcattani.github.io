@@ -4,10 +4,10 @@ description: Giovanni Cattani's Blog
 info:
    author: 		"Giovanni Cattani"
    email: 		"giov.catt@gmail.com"
-   domain: 		"gcattani.co.vu"
-   analytics:		"UA-39540268-1"
+   domain: 		"gcattani.github.io"
+   analytics:	"UA-39540268-1"
 
 markdown:		redcarpet
-permalink: 		/:year/:month/:title
-highlighter: 		pygments
+permalink: 		/:year:month/:title
+highlighter: 	pygments
 exclude: 		[README.md, LICENSE, Makefile]
