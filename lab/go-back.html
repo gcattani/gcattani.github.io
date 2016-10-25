@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Go Back!</title>
+<h1>now go back to the previous page...</h1>
+
+<script>
+	if (window.opener) {
+		opener.location = 'https://gcattani.github.io/lab/malicious.html';
+	} else {
+		document.querySelector('h1').innerHTML = 'the previous tab is safe!'
+	}
+</script>
